@@ -2,108 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JS Drum Kit</title>
+  <title>Whack A Mole!</title>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="style.css">
-  <script src="fileSaver.js"></script>
 </head>
 <body>
 
+  <h1>Whack-a-mole! <span class="score">0</span></h1>
+  <button onClick="startGame()"><span class="btn">Start!</span></button>
 
-  <div class="keys">
-    <div data-key="65" class="key">
-      <kbd>A</kbd>
-      <span class="sound">clap</span>
+  <div class="game">
+    <div class="hole hole1">
+      <div class="mole"></div>
     </div>
-    <div data-key="83" class="key">
-      <kbd>S</kbd>
-      <span class="sound">hihat</span>
+    <div class="hole hole2">
     </div>
-    <div data-key="68" class="key">
-      <kbd>D</kbd>
-      <span class="sound">kick</span>
+    <div class="hole hole3">
+      <div class="mole"></div>
     </div>
-    <div data-key="70" class="key">
-      <kbd>F</kbd>
-      <span class="sound">openhat</span>
+    <div class="hole hole4">
+      <div class="mole"></div>
     </div>
-    <div data-key="71" class="key">
-      <kbd>G</kbd>
-      <span class="sound">boom</span>
+    <div class="hole hole5">
+      <div class="mole"></div>
     </div>
-    <div data-key="72" class="key">
-      <kbd>H</kbd>
-      <span class="sound">ride</span>
-    </div>
-    <div data-key="74" class="key">
-      <kbd>J</kbd>
-      <span class="sound">snare</span>
-    </div>
-    <div data-key="75" class="key">
-      <kbd>K</kbd>
-      <span class="sound">tom</span>
-    </div>
-    <div data-key="76" class="key">
-      <kbd>L</kbd>
-      <span class="sound">tink</span>
+    <div class="hole hole6">
+      <div class="mole"></div>
     </div>
   </div>
-  <span class=text-part></span>
-  <button  class="link-key hide" onclick="createFile()">Create <span class = "sound">KEYSTROKES</span> File
-  </button>
-  
-</body>
-
-  <audio data-key="65" src="sounds/clap.wav"></audio>
-  <audio data-key="83" src="sounds/hihat.wav"></audio>
-  <audio data-key="68" src="sounds/kick.wav"></audio>
-  <audio data-key="70" src="sounds/openhat.wav"></audio>
-  <audio data-key="71" src="sounds/boom.wav"></audio>
-  <audio data-key="72" src="sounds/ride.wav"></audio>
-  <audio data-key="74" src="sounds/snare.wav"></audio>
-  <audio data-key="75" src="sounds/tom.wav"></audio>
-  <audio data-key="76" src="sounds/tink.wav"></audio>
+  <div><span class="timeout hide">TIMEOUT</span></div>
 
 <script>
-  let i=0;
-  const keystrokearray = [];
-  let text;
-  const textPart = document.querySelector('.text-part');
-  const btn =  document.querySelector('button');
-  window.addEventListener('keydown', function(e){
-      
-      
-      const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-      const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
-      
-      if(!audio) return;
-      btn.classList.remove('hide');
-      keystrokearray.push(e.key);
-      text = keystrokearray.join('');
-      text= text.split('');
-      textPart.textContent = text;
-      audio.currentTime=0;
-      audio.play();
-      key.classList.add('playing');
-  });
-  
-  function removeTransition(e)
-  {
-    if(e.propertyName !=='transform') return;
-    this.classList.remove('playing');
+  const holes = document.querySelectorAll('.hole');
+  const scoreBoard = document.querySelector('.score');
+  const moles = document.querySelectorAll('.mole');
+  const timeout = document.querySelector('.timeout');
+  const btn = document.querySelector('.btn');
+  const mainbtn = document.querySelector('button');
+  console.log(btn);
+  let lastHole;
+  let timeUp = false;
+  let score = 0;
+  const timeup="TIME OUT";
+  function randomTime(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
   }
-  const keys=document.querySelectorAll('.key');
-  keys.forEach(key=>key.addEventListener('transitionend',removeTransition));
-
-  function createFile(){
-    var textToSave = new Blob([text],{type:"text/plain;charset=utf-8"});
-    /*const markup = `
-        <a href = "${textToSave}" download="keystokes">DOWnLOAD FiLE</a>
-    `;
-    btn.innerHTML = markup;*/
-    saveAs(textToSave,"keystrokes.txt");
-  } 
+  function randomHole(holes) {
+    const idx = Math.floor(Math.random() * holes.length);
+    const hole = holes[idx];
+    if (hole === lastHole) {
+      console.log('Ah nah thats the same one bud');
+      return randomHole(holes);
+    }
+    lastHole = hole;
+    return hole;
+  }
+  function peep() {
+    const time = randomTime(500,2000);
+    const hole = randomHole(holes);
+    hole.classList.add('up');
+    setTimeout(() => {
+      hole.classList.remove('up');
+      if (!timeUp) peep();
+    }, time);
+  }
+  function startGame() {
+    scoreBoard.textContent = 0;
+    timeUp = false;
+    score = 0;
+    peep();
+	mainbtn.classList.add("hide");
+	timeout.classList.add("hide");
+    setTimeout(() => {timeUp = true;btn.textContent="Restart!";}, 10000)
+	setTimeout(() =>{timeout.classList.remove("hide");
+	mainbtn.classList.remove("hide");},10033);
+  }
+	
+  
+  function bonk(e) {
+    if(!e.isTrusted) return; // cheater!
+    score++;
+    this.parentNode.classList.remove('up');
+    scoreBoard.textContent = score;
+  }
+  moles.forEach(mole => mole.addEventListener('click', bonk));
 </script>
-
-
 </body>
 </html>

@@ -1,93 +1,83 @@
 html {
+  box-sizing: border-box;
   font-size: 10px;
-  background: url(http://i.imgur.com/b9r5sEL.jpg) bottom center;
-  background-size: cover;
+  background: #ffc600;
 }
-body,html {
-  margin: 0;
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
   padding: 0;
-  font-family: sans-serif;
+  margin:0;
+  font-family: 'Amatic SC', cursive;
 }
 
-.keys {
-  display: flex;
-  flex: 1;
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
-}
-
-.key {
-  border: .4rem solid black;
-  border-radius: .5rem;
-  margin: 1rem;
-  font-size: 1.5rem;
-  padding: 1rem .5rem;
-  transition: all .07s ease;
-  width: 10rem;
+h1 {
   text-align: center;
-  color: white;
-  background: rgba(0,0,0,0.4);
-  text-shadow: 0 0 .5rem black;
+  font-size: 10rem;
+  line-height:1;
+  margin-bottom: 0;
 }
 
-.playing {
-  transform: scale(1.1);
-  border-color: #ffc600;
-  box-shadow: 0 0 1rem #ffc600;
+.score {
+  background:rgba(255,255,255,0.2);
+  padding:0 3rem;
+  line-height:1;
+  border-radius:1rem;
 }
 
-kbd {
+.game {
+  width:600px;
+  height:400px;
+  display:flex;
+  flex-wrap:wrap;
+  margin:0 auto;
+}
+
+.hole {
+  flex: 1 0 33.33%;
+  overflow: hidden;
+  position: relative;
+}
+
+.hole:after {
   display: block;
-  font-size: 4rem;
+  background: url(dirt.svg) bottom center no-repeat;
+  background-size:contain;
+  content:'';
+  width: 100%;
+  height:70px;
+  position: absolute;
+  z-index: 2;
+  bottom:-30px;
 }
 
-.sound {
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  letter-spacing: .1rem;
-  text-decoration: none;
-  color: #ffc600;
-}
-.text-part{
-  color:#ffc600;
+.mole {
+  background:url('mole.svg') bottom center no-repeat;
+  background-size:60%;
   position: absolute;
-  width:1000px;
-  font-size:3rem;
-  top:66%;
-  left:10%;
-  overflow-x: auto;
-  text-transform: uppercase;
+  top: 100%;
+  width: 100%;
+  height: 100%;
+  transition:all 0.38s;
 }
-button>.sound
-{
-  font-size:1.8rem;
-}
-.link-key
-{
-  position: absolute;
-  bottom:5%;
-  left:40%;
- border: .4rem solid black;
-  border-radius: .5rem;
-  margin: 1rem;
-  font-size: 1.6rem;
-  padding: 1rem .5rem;
-  transition: all .07s ease;
-  width: 25rem;
-  text-align: center;
-  color: white;
-  background: rgba(0,0,0,0.4);
-  text-shadow: 0 0 .5rem black; 
-  letter-spacing: 1px;
-}
-a
-{
-  text-decoration: none;
-  color:#ffc600;
 
+.hole.up .mole {
+  top:0;
 }
-.hide
-{
-  display: none;
+.timeout
+{	
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translate(-40px,130px);
+	font-weight:bold;
+	text-align:center;
+	font-size:5rem;
+	color:red;
+}
+.hide{
+	visibility:hidden;
 }
